@@ -2,8 +2,18 @@ package pasa.cbentley.core.src5.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import pasa.cbentley.core.src4.helpers.StringBBuilder;
+import pasa.cbentley.core.src5.ctx.C5Ctx;
 
 public class TextUtils {
+
+   protected final C5Ctx c5;
+
+   public TextUtils(C5Ctx c5) {
+      this.c5 = c5;
+   }
 
    public List<String> fullJustify(String[] words, int maxWidth) {
       int n = words.length;
@@ -72,5 +82,83 @@ public class TextUtils {
       for (int i = 0; i < maxWidth - lineWidth; i++)
          justifiedLine.append(" ");
       return justifiedLine.toString();
+   }
+
+   /**
+    * Add space between words that are in the dictionary
+    * 
+    * Words that are not in the dictionnary are left as is
+    * 
+    * Borderline cases
+    * <li> Empty dic returns input string
+    * 
+    * TODO O(dicSize) because we have to compute max word length.. usually we want a dic that computes
+    * this information by construction.
+    * 
+    * @param inputWithNoSpaces
+    * @param dictionary
+    * @return
+    */
+   public String addSpaces(String inputWithNoSpaces, Set<String> dictionary) {
+      if(inputWithNoSpaces == null || inputWithNoSpaces.equals("")) {
+         return inputWithNoSpaces;
+      }
+      if(dictionary.size() == 0) {
+         return inputWithNoSpaces;
+      }
+      int offsetStart = 0;
+      StringBBuilder sb = new StringBBuilder();
+      int maxWordSize = getSizeWordMax(dictionary);
+      if(maxWordSize == 0) {
+         //we have a nasty dic with just an empty string!
+         return inputWithNoSpaces;
+      }
+      boolean isStartUnknownWord = true;
+      while (offsetStart < inputWithNoSpaces.length()) {
+         //find the longest word first and go down
+         int lastNumChars = inputWithNoSpaces.length() - offsetStart;
+         int i = Math.min(lastNumChars, maxWordSize);
+         boolean wasAdded = false;
+         for (; i > 1; i--) {
+            String str = inputWithNoSpaces.substring(offsetStart, offsetStart + i);
+            boolean isWord = dictionary.contains(str);
+            if(isWord) {
+               if(sb.getCount() != 0) {
+                  sb.append(' ');
+               }
+               sb.append(str);
+               wasAdded = true;
+               break; //out of for loop
+            }
+         }
+         if(wasAdded) {
+            isStartUnknownWord = true;
+            offsetStart = offsetStart + i;
+         } else {
+            //check if not very start of string and if we are at the start of an unknown word
+            if(sb.getCount() != 0 && isStartUnknownWord) {
+               sb.append(' ');
+            }
+            //append letter in unknown word
+            sb.append(inputWithNoSpaces.charAt(offsetStart));
+            offsetStart = offsetStart + 1;
+            isStartUnknownWord = false;
+         }
+      }
+      if (sb.getCount() == 0) {
+         return inputWithNoSpaces;
+      } else {
+         return sb.toString();
+      }
+   }
+   
+   public int getSizeWordMax(Set<String> dictionary) {
+      int max = 0;
+      for (String string : dictionary) {
+         if(string.length() > max) {
+            max = string.length();
+         }
+      }
+      return max;
    }
 }

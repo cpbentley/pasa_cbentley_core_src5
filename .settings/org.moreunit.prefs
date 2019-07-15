@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+org.moreunit.package_suffix=tests
+org.moreunit.preferences.version=2
+org.moreunit.testClassNameTemplate=Test${srcFile}
+org.moreunit.unitsourcefolder=pasa_cbentley_core_src5\:src\:pasa_cbentley_core_src5_test\:src
+org.moreunit.useprojectsettings=true

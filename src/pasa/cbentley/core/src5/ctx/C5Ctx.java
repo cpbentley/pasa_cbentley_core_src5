@@ -10,6 +10,7 @@ import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src5.interfaces.INameable;
+import pasa.cbentley.core.src5.utils.TextUtils;
 
 public class C5Ctx extends ACtx implements ICtx {
 
@@ -17,6 +18,15 @@ public class C5Ctx extends ACtx implements ICtx {
       super(uc);
    }
 
+   private TextUtils textUtils = null;
+   
+   public TextUtils getTextUtils() {
+      if(textUtils == null) {
+         textUtils = new TextUtils(this);
+      }
+      return textUtils;
+   }
+   
    //#mdebug
    public void toString(Dctx dc, List<String> list, String title) {
       if (list == null) {
