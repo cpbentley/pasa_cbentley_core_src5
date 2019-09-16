@@ -2,6 +2,7 @@ package pasa.cbentley.core.src5.ctx;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import pasa.cbentley.core.src4.ctx.ACtx;
@@ -19,14 +20,14 @@ public class C5Ctx extends ACtx implements ICtx {
    }
 
    private TextUtils textUtils = null;
-   
+
    public TextUtils getTextUtils() {
-      if(textUtils == null) {
+      if (textUtils == null) {
          textUtils = new TextUtils(this);
       }
       return textUtils;
    }
-   
+
    //#mdebug
    public void toString(Dctx dc, List<String> list, String title) {
       if (list == null) {
@@ -55,6 +56,32 @@ public class C5Ctx extends ACtx implements ICtx {
       }
    }
 
+   public void toStringHashMapStringString(Dctx dc, Map<String, String> map, String title, boolean keyFirst) {
+      if (map == null) {
+         dc.append("HashMap " + title + " is null");
+      } else {
+         dc.append(title);
+         dc.append(" #");
+         dc.append(map.size());
+         dc.tab();
+         Set<String> keySet = map.keySet();
+         for (String keyString : keySet) {
+            String strValue = map.get(keyString);
+            if (keyFirst) {
+               dc.append(keyString);
+               dc.append("=");
+               dc.append(strValue);
+            } else {
+               dc.append(strValue);
+               dc.append("=");
+               dc.append(keyString);
+            }
+            dc.nl();
+         }
+         dc.tabRemove();
+      }
+   }
+
    public void toStringHashMap(Dctx dc, HashMap<String, ? extends IStringable> map, String title) {
       if (map == null) {
          dc.append("HashMap " + title + " is null");
@@ -69,7 +96,7 @@ public class C5Ctx extends ACtx implements ICtx {
          dc.tabRemove();
       }
    }
-   
+
    public void toStringHashMap1Line(Dctx dc, HashMap<String, ? extends IStringable> map, String title) {
       dc.nl();
       if (map == null) {
@@ -88,7 +115,7 @@ public class C5Ctx extends ACtx implements ICtx {
          dc.tabRemove();
       }
    }
-   
+
    public void toStringHashMapNameable1Line(Dctx dc, HashMap<? extends INameable, ? extends IStringable> map, String title) {
       dc.nl();
       if (map == null) {
