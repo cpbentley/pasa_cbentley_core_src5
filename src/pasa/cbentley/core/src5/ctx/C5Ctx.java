@@ -1,5 +1,6 @@
 package pasa.cbentley.core.src5.ctx;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,27 @@ public class C5Ctx extends ACtx implements ICtx {
       }
    }
 
+   public String toStringFile(File file, String title) {
+      Dctx dc = new Dctx(uc);
+      toStringFile(dc, file, title);
+      return dc.toString();
+   }
+
+   public String toStringFile(Dctx dc, File file, String title) {
+      if (file == null) {
+         dc.append("File " + title + " is null");
+      } else {
+         dc.append(title);
+         dc.tab();
+         dc.appendVarWithSpace("path", file.getAbsolutePath());
+         dc.appendVarWithSpace("canExecute", file.canExecute());
+         dc.appendVarWithSpace("canRead", file.canRead());
+         dc.appendVarWithSpace("canWrite", file.canWrite());
+         dc.tabRemove();
+      }
+      return null;
+   }
+
    public void toStringListStringable(Dctx dc, List<? extends IStringable> list, String title) {
       if (list == null) {
          dc.append("List " + title + " is null");
@@ -65,7 +87,12 @@ public class C5Ctx extends ACtx implements ICtx {
          dc.append(map.size());
          dc.tab();
          Set<String> keySet = map.keySet();
+         int count = 0;
          for (String keyString : keySet) {
+            count++;
+            dc.nl();
+            dc.append(count);
+            dc.append("\t");
             String strValue = map.get(keyString);
             if (keyFirst) {
                dc.append(keyString);
@@ -76,7 +103,6 @@ public class C5Ctx extends ACtx implements ICtx {
                dc.append("=");
                dc.append(keyString);
             }
-            dc.nl();
          }
          dc.tabRemove();
       }
@@ -135,4 +161,5 @@ public class C5Ctx extends ACtx implements ICtx {
       }
    }
    //#enddebug
+
 }
