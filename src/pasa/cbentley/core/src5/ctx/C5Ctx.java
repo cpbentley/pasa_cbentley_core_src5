@@ -30,7 +30,7 @@ public class C5Ctx extends ACtx implements ICtx {
    }
 
    //#mdebug
-   public void toString(Dctx dc, List<String> list, String title) {
+   public void toStringListString(Dctx dc, List<String> list, String title) {
       if (list == null) {
          dc.append("List " + title + " is null");
       } else {
@@ -50,7 +50,7 @@ public class C5Ctx extends ACtx implements ICtx {
       return dc.toString();
    }
 
-   public String toStringFile(Dctx dc, File file, String title) {
+   public void toStringFile(Dctx dc, File file, String title) {
       if (file == null) {
          dc.append("File " + title + " is null");
       } else {
@@ -62,7 +62,6 @@ public class C5Ctx extends ACtx implements ICtx {
          dc.appendVarWithSpace("canWrite", file.canWrite());
          dc.tabRemove();
       }
-      return null;
    }
 
    public void toStringListStringable(Dctx dc, List<? extends IStringable> list, String title) {
@@ -140,6 +139,33 @@ public class C5Ctx extends ACtx implements ICtx {
          }
          dc.tabRemove();
       }
+   }
+
+   public void toStringThread(Dctx dc, Thread thread, String title) {
+      if (thread == null) {
+         dc.append("Thread " + title + " is null");
+      } else {
+         dc.root(thread, "Thread");
+         dc.appendWithSpace(title);
+         dc.tab();
+         dc.appendVarWithSpace("name", thread.getName());
+         dc.appendVarWithSpace("priority", thread.getPriority());
+         dc.appendVarWithSpace("id", thread.getId());
+         dc.appendVarWithSpace("isAlive", thread.isAlive());
+         dc.appendVarWithSpace("isDaemon", thread.isDaemon());
+         dc.appendVarWithSpace("isInterrupted", thread.isInterrupted());
+         dc.tabRemove();
+      }
+   }
+
+   public String toStringThread(Thread thread, String title) {
+      Dctx dc = new Dctx(uc);
+      toStringThread(dc, thread, title);
+      return dc.toString();
+   }
+
+   public String toStringThreadCurrent() {
+      return toStringThread(Thread.currentThread(), "current");
    }
 
    public void toStringHashMapNameable1Line(Dctx dc, HashMap<? extends INameable, ? extends IStringable> map, String title) {
