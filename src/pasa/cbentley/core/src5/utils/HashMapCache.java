@@ -23,8 +23,6 @@ public class HashMapCache<E extends INameable<V>, V extends IStringable> impleme
     */
    protected boolean                     isDataLoaded = false;
 
-   protected ICacheLoadingListener<E, V> listener;
-
    protected final C5Ctx                 c5;
 
    public HashMapCache(C5Ctx c5c) {
@@ -73,16 +71,6 @@ public class HashMapCache<E extends INameable<V>, V extends IStringable> impleme
       }
    }
 
-   public void setCacheLoadingListener(ICacheLoadingListener<E, V> listener) {
-      this.listener = listener;
-   }
-
-   public void notifyFinishLoading() {
-      isDataLoaded = true;
-      if (listener != null) {
-         listener.modelDidFinishLoading(this);
-      }
-   }
 
    //#mdebug
    public IDLog toDLog() {
@@ -97,7 +85,6 @@ public class HashMapCache<E extends INameable<V>, V extends IStringable> impleme
       dc.root(this, "HashMapCache");
       toStringPrivate(dc);
       c5.toStringHashMap1Line(dc, pks, "HashMap");
-      dc.nlLvl(listener, "ICacheLoadingListener");
    }
 
    public String toString1Line() {

@@ -11,13 +11,19 @@ import pasa.cbentley.core.src4.ctx.ICtx;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IStringable;
+import pasa.cbentley.core.src4.logging.IUserLog;
 import pasa.cbentley.core.src5.interfaces.INameable;
 import pasa.cbentley.core.src5.utils.TextUtils;
 
 public class C5Ctx extends ACtx implements ICtx {
 
+   protected final C5Debug c5Debug;
+
    public C5Ctx(UCtx uc) {
       super(uc);
+      
+      //#debug
+      c5Debug = new C5Debug(this);
    }
 
    private TextUtils textUtils = null;
@@ -27,6 +33,10 @@ public class C5Ctx extends ACtx implements ICtx {
          textUtils = new TextUtils(this);
       }
       return textUtils;
+   }
+   
+   public IUserLog getLog() {
+      return uc.getUserLog();
    }
 
    //#mdebug
@@ -42,6 +52,11 @@ public class C5Ctx extends ACtx implements ICtx {
          }
          dc.tabRemove();
       }
+   }
+   
+   
+   public C5Debug to5D() {
+      return c5Debug;
    }
 
    public String toStringFile(File file, String title) {
