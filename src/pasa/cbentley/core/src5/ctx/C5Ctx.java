@@ -12,6 +12,7 @@ import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.logging.IUserLog;
+import pasa.cbentley.core.src5.interfaces.IMem5;
 import pasa.cbentley.core.src5.interfaces.INameable;
 import pasa.cbentley.core.src5.utils.TextUtils;
 
@@ -21,7 +22,7 @@ public class C5Ctx extends ACtx implements ICtx {
 
    public C5Ctx(UCtx uc) {
       super(uc);
-      
+
       //#debug
       c5Debug = new C5Debug(this);
    }
@@ -34,7 +35,16 @@ public class C5Ctx extends ACtx implements ICtx {
       }
       return textUtils;
    }
-   
+
+   private IMem5 mem5;
+
+   public IMem5 getMem() {
+      if (mem5 == null) {
+         mem5 = new Mem5(this);
+      }
+      return mem5;
+   }
+
    public IUserLog getLog() {
       return uc.getUserLog();
    }
@@ -53,8 +63,7 @@ public class C5Ctx extends ACtx implements ICtx {
          dc.tabRemove();
       }
    }
-   
-   
+
    public C5Debug to5D() {
       return c5Debug;
    }
