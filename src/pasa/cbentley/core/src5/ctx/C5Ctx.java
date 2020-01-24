@@ -1,6 +1,9 @@
 package pasa.cbentley.core.src5.ctx;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,16 +12,32 @@ import java.util.Set;
 import pasa.cbentley.core.src4.ctx.ACtx;
 import pasa.cbentley.core.src4.ctx.ICtx;
 import pasa.cbentley.core.src4.ctx.UCtx;
+import pasa.cbentley.core.src4.io.BAByteIS;
+import pasa.cbentley.core.src4.io.BAByteOS;
+import pasa.cbentley.core.src4.io.BADataIS;
+import pasa.cbentley.core.src4.io.BADataOS;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.logging.IUserLog;
 import pasa.cbentley.core.src5.interfaces.IMem5;
 import pasa.cbentley.core.src5.interfaces.INameable;
+import pasa.cbentley.core.src5.interfaces.ITechJava5Props;
 import pasa.cbentley.core.src5.utils.TextUtils;
 
+/**
+ * Code ctx that provides access to all Java 5 constructs and classes.
+ * 
+ * 
+ * @author Charles Bentley
+ *
+ */
 public class C5Ctx extends ACtx implements ICtx {
 
    protected final C5Debug c5Debug;
+
+   private IMem5           mem5;
+
+   private TextUtils       textUtils = null;
 
    public C5Ctx(UCtx uc) {
       super(uc);
@@ -27,16 +46,9 @@ public class C5Ctx extends ACtx implements ICtx {
       c5Debug = new C5Debug(this);
    }
 
-   private TextUtils textUtils = null;
-
-   public TextUtils getTextUtils() {
-      if (textUtils == null) {
-         textUtils = new TextUtils(this);
-      }
-      return textUtils;
+   public IUserLog getLog() {
+      return uc.getUserLog();
    }
-
-   private IMem5 mem5;
 
    public IMem5 getMem() {
       if (mem5 == null) {
@@ -45,33 +57,56 @@ public class C5Ctx extends ACtx implements ICtx {
       return mem5;
    }
 
-   public IUserLog getLog() {
-      return uc.getUserLog();
+   public TextUtils getTextUtils() {
+      if (textUtils == null) {
+         textUtils = new TextUtils(this);
+      }
+      return textUtils;
    }
 
-   //#mdebug
-   public void toStringListString(Dctx dc, List<String> list, String title) {
-      if (list == null) {
-         dc.append("List " + title + " is null");
-      } else {
-         dc.append(title);
-         dc.tab();
-         for (String str : list) {
-            dc.nl();
-            dc.append(str);
-         }
-         dc.tabRemove();
+   public String getUserHome() {
+      return System.getProperty(ITechJava5Props.USER_HOME);
+   }
+
+   /**
+    * Does not load if file does not exists
+    * @param fileName
+    * @throws IOException
+    */
+   public void loadCtxSettingsFromUserHome(String fileName) throws IOException {
+      String homeDir = getUserHome();
+      //read the state asap from a file
+      File f = new File(homeDir, fileName);
+      if (f.exists()) {
+         FileInputStream fis = new FileInputStream(f);
+         byte[] bytes = uc.getIOU().streamToByte(fis);
+         BAByteIS bis = new BAByteIS(uc, bytes);
+         BADataIS bais = new BADataIS(uc, bis);
+         uc.getCtxManager().stateRead(bais);
+      }
+   }
+
+   public void saveCtxSettingsToUserHome(String fileName) throws IOException {
+      String homeDir = getUserHome();
+      File f = new File(homeDir, fileName);
+      
+      //#debug
+      toDLog().pFlow(""+f.getAbsolutePath(), this, C5Ctx.class, "saveCtxSettingsToUserHome", LVL_05_FINE, true);
+      
+      BAByteOS bis = new BAByteOS(uc);
+      BADataOS bais = new BADataOS(uc, bis);
+      uc.getCtxManager().stateWrite(bais);
+
+      FileOutputStream fos = new FileOutputStream(f);
+      try {
+         fos.write(bis.getArrayRef(), 0, bis.getByteWrittenCount());
+      } catch (Exception e) {
+         fos.close();
       }
    }
 
    public C5Debug to5D() {
       return c5Debug;
-   }
-
-   public String toStringFile(File file, String title) {
-      Dctx dc = new Dctx(uc);
-      toStringFile(dc, file, title);
-      return dc.toString();
    }
 
    public void toStringFile(Dctx dc, File file, String title) {
@@ -88,47 +123,10 @@ public class C5Ctx extends ACtx implements ICtx {
       }
    }
 
-   public void toStringListStringable(Dctx dc, List<? extends IStringable> list, String title) {
-      if (list == null) {
-         dc.append("List " + title + " is null");
-      } else {
-         dc.append(title);
-         dc.tab();
-         for (IStringable is : list) {
-            dc.nlLvl(is);
-         }
-         dc.tabRemove();
-      }
-   }
-
-   public void toStringHashMapStringString(Dctx dc, Map<String, String> map, String title, boolean keyFirst) {
-      if (map == null) {
-         dc.append("HashMap " + title + " is null");
-      } else {
-         dc.append(title);
-         dc.append(" #");
-         dc.append(map.size());
-         dc.tab();
-         Set<String> keySet = map.keySet();
-         int count = 0;
-         for (String keyString : keySet) {
-            count++;
-            dc.nl();
-            dc.append(count);
-            dc.append("\t");
-            String strValue = map.get(keyString);
-            if (keyFirst) {
-               dc.append(keyString);
-               dc.append("=");
-               dc.append(strValue);
-            } else {
-               dc.append(strValue);
-               dc.append("=");
-               dc.append(keyString);
-            }
-         }
-         dc.tabRemove();
-      }
+   public String toStringFile(File file, String title) {
+      Dctx dc = new Dctx(uc);
+      toStringFile(dc, file, title);
+      return dc.toString();
    }
 
    public void toStringHashMap(Dctx dc, HashMap<String, ? extends IStringable> map, String title) {
@@ -165,6 +163,84 @@ public class C5Ctx extends ACtx implements ICtx {
       }
    }
 
+   public void toStringHashMapNameable1Line(Dctx dc, HashMap<? extends INameable, ? extends IStringable> map, String title) {
+      dc.nl();
+      if (map == null) {
+         dc.append("HashMap " + title + " is null");
+      } else {
+         dc.append(title);
+         dc.tab();
+         Set<? extends INameable> keySet = map.keySet();
+         for (INameable keyString : keySet) {
+            IStringable stringable = map.get(keyString);
+            dc.nl();
+            dc.append(keyString.getNameableString());
+            dc.append("->");
+            dc.append(stringable.toString1Line());
+         }
+         dc.tabRemove();
+      }
+   }
+   //#enddebug
+
+   public void toStringHashMapStringString(Dctx dc, Map<String, String> map, String title, boolean keyFirst) {
+      if (map == null) {
+         dc.append("HashMap " + title + " is null");
+      } else {
+         dc.append(title);
+         dc.append(" #");
+         dc.append(map.size());
+         dc.tab();
+         Set<String> keySet = map.keySet();
+         int count = 0;
+         for (String keyString : keySet) {
+            count++;
+            dc.nl();
+            dc.append(count);
+            dc.append("\t");
+            String strValue = map.get(keyString);
+            if (keyFirst) {
+               dc.append(keyString);
+               dc.append("=");
+               dc.append(strValue);
+            } else {
+               dc.append(strValue);
+               dc.append("=");
+               dc.append(keyString);
+            }
+         }
+         dc.tabRemove();
+      }
+   }
+
+   //#mdebug
+   public void toStringListString(Dctx dc, List<String> list, String title) {
+      if (list == null) {
+         dc.append("List " + title + " is null");
+      } else {
+         dc.append(title);
+         dc.tab();
+         for (String str : list) {
+            dc.nl();
+            dc.append(str);
+         }
+         dc.tabRemove();
+      }
+   }
+
+   public void toStringListStringable(Dctx dc, List<? extends IStringable> list, String title) {
+      if (list == null) {
+         dc.append("List " + title + " is null");
+      } else {
+         dc.append(title);
+         dc.tab();
+         for (IStringable is : list) {
+            dc.nlLvl(is);
+         }
+         dc.tabRemove();
+      }
+   }
+
    public void toStringThread(Dctx dc, Thread thread, String title) {
       if (thread == null) {
          dc.append("Thread " + title + " is null");
@@ -191,25 +267,5 @@ public class C5Ctx extends ACtx implements ICtx {
    public String toStringThreadCurrent() {
       return toStringThread(Thread.currentThread(), "current");
    }
-
-   public void toStringHashMapNameable1Line(Dctx dc, HashMap<? extends INameable, ? extends IStringable> map, String title) {
-      dc.nl();
-      if (map == null) {
-         dc.append("HashMap " + title + " is null");
-      } else {
-         dc.append(title);
-         dc.tab();
-         Set<? extends INameable> keySet = map.keySet();
-         for (INameable keyString : keySet) {
-            IStringable stringable = map.get(keyString);
-            dc.nl();
-            dc.append(keyString.getNameableString());
-            dc.append("->");
-            dc.append(stringable.toString1Line());
-         }
-         dc.tabRemove();
-      }
-   }
-   //#enddebug
 
 }
