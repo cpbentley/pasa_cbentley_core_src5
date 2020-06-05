@@ -1,3 +1,7 @@
+/*
+ * (c) 2018-2020 Charles-Philip Bentley
+ * This code is licensed under MIT license (see LICENSE.txt for details)
+ */
 package pasa.cbentley.core.src5.ctx;
 
 import java.io.File;
@@ -33,6 +37,8 @@ import pasa.cbentley.core.src5.utils.TextUtils;
  */
 public class C5Ctx extends ACtx implements ICtx {
 
+   public static final int CTX_ID    = 2;
+
    protected final C5Debug c5Debug;
 
    private IMem5           mem5;
@@ -44,6 +50,10 @@ public class C5Ctx extends ACtx implements ICtx {
 
       //#debug
       c5Debug = new C5Debug(this);
+   }
+
+   public int getCtxID() {
+      return CTX_ID;
    }
 
    public IUserLog getLog() {
@@ -64,8 +74,20 @@ public class C5Ctx extends ACtx implements ICtx {
       return textUtils;
    }
 
+   /**
+    * Get system property {@link ITechJava5Props#DIR_HOME}
+    * @return
+    */
    public String getUserHome() {
-      return System.getProperty(ITechJava5Props.USER_HOME);
+      return System.getProperty(ITechJava5Props.DIR_HOME);
+   }
+
+   public String getUserDir() {
+      return System.getProperty(ITechJava5Props.DIR_USER);
+   }
+
+   public String getSeparatorFile() {
+      return System.getProperty(ITechJava5Props.SEPARATOR_FILE);
    }
 
    /**
@@ -89,10 +111,10 @@ public class C5Ctx extends ACtx implements ICtx {
    public void saveCtxSettingsToUserHome(String fileName) throws IOException {
       String homeDir = getUserHome();
       File f = new File(homeDir, fileName);
-      
+
       //#debug
-      toDLog().pFlow(""+f.getAbsolutePath(), this, C5Ctx.class, "saveCtxSettingsToUserHome", LVL_05_FINE, true);
-      
+      toDLog().pFlow("" + f.getAbsolutePath(), this, C5Ctx.class, "saveCtxSettingsToUserHome", LVL_05_FINE, true);
+
       BAByteOS bis = new BAByteOS(uc);
       BADataOS bais = new BADataOS(uc, bis);
       uc.getCtxManager().stateWrite(bais);
@@ -267,5 +289,24 @@ public class C5Ctx extends ACtx implements ICtx {
    public String toStringThreadCurrent() {
       return toStringThread(Thread.currentThread(), "current");
    }
+
+   //#mdebug
+   public void toString(Dctx dc) {
+      dc.root(this, "C5Ctx");
+      toStringPrivate(dc);
+      super.toString(dc.sup());
+   }
+
+   private void toStringPrivate(Dctx dc) {
+
+   }
+
+   public void toString1Line(Dctx dc) {
+      dc.root1Line(this, "C5Ctx");
+      toStringPrivate(dc);
+      super.toString1Line(dc.sup1Line());
+   }
+
+   //#enddebug
 
 }

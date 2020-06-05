@@ -1,3 +1,7 @@
+/*
+ * (c) 2018-2020 Charles-Philip Bentley
+ * This code is licensed under MIT license (see LICENSE.txt for details)
+ */
 package pasa.cbentley.core.src5.structs;
 
 import java.lang.reflect.Array;
@@ -71,6 +75,15 @@ public class BufferTStrong<T> implements IStringable {
       return array;
    }
 
+   /**
+    * Remove all references of t.
+    * @param t
+    */
+   public void removeAll(T t) {
+      for (int i = 0; i < objects.length; i++) {
+         
+      }
+   }
    /**
     * Uses the reference!
     * @param ar
