@@ -38,7 +38,8 @@ import pasa.cbentley.core.src5.utils.TextUtils;
 public class C5Ctx extends ACtx implements ICtx {
 
    public static final int CTX_ID    = 2;
-
+   
+   //#debug
    protected final C5Debug c5Debug;
 
    private IMem5           mem5;
@@ -67,11 +68,19 @@ public class C5Ctx extends ACtx implements ICtx {
       return mem5;
    }
 
+   public String getSeparatorFile() {
+      return System.getProperty(ITechJava5Props.SEPARATOR_FILE);
+   }
+
    public TextUtils getTextUtils() {
       if (textUtils == null) {
          textUtils = new TextUtils(this);
       }
       return textUtils;
+   }
+
+   public String getUserDir() {
+      return System.getProperty(ITechJava5Props.DIR_USER);
    }
 
    /**
@@ -80,14 +89,6 @@ public class C5Ctx extends ACtx implements ICtx {
     */
    public String getUserHome() {
       return System.getProperty(ITechJava5Props.DIR_HOME);
-   }
-
-   public String getUserDir() {
-      return System.getProperty(ITechJava5Props.DIR_USER);
-   }
-
-   public String getSeparatorFile() {
-      return System.getProperty(ITechJava5Props.SEPARATOR_FILE);
    }
 
    /**
@@ -127,8 +128,21 @@ public class C5Ctx extends ACtx implements ICtx {
       }
    }
 
+   //#mdebug
    public C5Debug to5D() {
       return c5Debug;
+   }
+
+   public void toString(Dctx dc) {
+      dc.root(this, "C5Ctx");
+      toStringPrivate(dc);
+      super.toString(dc.sup());
+   }
+
+   public void toString1Line(Dctx dc) {
+      dc.root1Line(this, "C5Ctx");
+      toStringPrivate(dc);
+      super.toString1Line(dc.sup1Line());
    }
 
    public void toStringFile(Dctx dc, File file, String title) {
@@ -203,7 +217,6 @@ public class C5Ctx extends ACtx implements ICtx {
          dc.tabRemove();
       }
    }
-   //#enddebug
 
    public void toStringHashMapStringString(Dctx dc, Map<String, String> map, String title, boolean keyFirst) {
       if (map == null) {
@@ -235,7 +248,7 @@ public class C5Ctx extends ACtx implements ICtx {
       }
    }
 
-   //#mdebug
+  
    public void toStringListString(Dctx dc, List<String> list, String title) {
       if (list == null) {
          dc.append("List " + title + " is null");
@@ -263,6 +276,10 @@ public class C5Ctx extends ACtx implements ICtx {
       }
    }
 
+   private void toStringPrivate(Dctx dc) {
+
+   }
+
    public void toStringThread(Dctx dc, Thread thread, String title) {
       if (thread == null) {
          dc.append("Thread " + title + " is null");
@@ -288,23 +305,6 @@ public class C5Ctx extends ACtx implements ICtx {
 
    public String toStringThreadCurrent() {
       return toStringThread(Thread.currentThread(), "current");
-   }
-
-   //#mdebug
-   public void toString(Dctx dc) {
-      dc.root(this, "C5Ctx");
-      toStringPrivate(dc);
-      super.toString(dc.sup());
-   }
-
-   private void toStringPrivate(Dctx dc) {
-
-   }
-
-   public void toString1Line(Dctx dc) {
-      dc.root1Line(this, "C5Ctx");
-      toStringPrivate(dc);
-      super.toString1Line(dc.sup1Line());
    }
 
    //#enddebug

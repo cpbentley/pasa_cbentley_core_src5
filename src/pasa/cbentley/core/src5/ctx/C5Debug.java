@@ -9,6 +9,7 @@ import java.util.Timer;
 
 import pasa.cbentley.core.src4.logging.Dctx;
 
+//#mdebug
 public class C5Debug {
 
    protected final C5Ctx c5;
@@ -32,3 +33,4 @@ public class C5Debug {
       }
    }
 }
+//#enddebug
