@@ -17,27 +17,47 @@ import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src5.ctx.C5Ctx;
 import pasa.cbentley.core.src5.interfaces.INameable;
 
+/**
+ * Maps a E that implements {@link INameable} to a V supporting {@link IStringable}
+ * 
+ * The name of E is used as a key for the {@link HashMap}
+ * 
+ * @author Charles Bentley
+ *
+ * @param <E>
+ * @param <V>
+ */
 public class HashMapCache<E extends INameable<V>, V extends IStringable> implements IStringable {
 
-   protected HashMap<String, E>          pks;
+   protected HashMap<String, E> pks;
 
    /**
     * When set to true when creator explicitely knows
     * all the data is loaded into the model
     */
-   protected boolean                     isDataLoaded = false;
+   protected boolean            isDataLoaded = false;
 
-   protected final C5Ctx                 c5;
+   protected final C5Ctx        c5;
 
    public HashMapCache(C5Ctx c5c) {
       this.c5 = c5c;
       pks = new HashMap<String, E>();
    }
 
+   /**
+    * Retrieves E whose name is <code>keyString</code>
+    * @param keyString
+    * @return E
+    */
    public E getSelectedObject(String keyString) {
       return pks.get(keyString);
    }
 
+   /**
+    * Adds in the cache using {@link INameable#getNameableString()} as key in the map
+    * 
+    * @param pk
+    */
    public void addNamer(E pk) {
       String name = pk.getNameableString();
       pks.put(name, pk);
@@ -63,6 +83,10 @@ public class HashMapCache<E extends INameable<V>, V extends IStringable> impleme
       return pks.get(key);
    }
 
+   /**
+    * Puts all and replace any existing mapping
+    * @param into
+    */
    public void putAllInto(HashMap<String, E> into) {
       into.putAll(pks);
    }
@@ -74,7 +98,6 @@ public class HashMapCache<E extends INameable<V>, V extends IStringable> impleme
          addNamer(pk);
       }
    }
-
 
    //#mdebug
    public IDLog toDLog() {

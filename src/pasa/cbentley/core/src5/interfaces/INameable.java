@@ -6,6 +6,12 @@ package pasa.cbentley.core.src5.interfaces;
 
 import pasa.cbentley.core.src4.logging.IStringable;
 
+/**
+ * 
+ * @author Charles Bentley
+ *
+ * @param <X>
+ */
 public interface INameable<X> extends IStringable {
 
    /**
@@ -13,7 +19,7 @@ public interface INameable<X> extends IStringable {
     * @return
     */
    public String getNameableString();
-   
+
    /**
     * Returns the object being named
     * @return
