@@ -38,7 +38,7 @@ import pasa.cbentley.core.src5.utils.TextUtils;
 public class C5Ctx extends ACtx implements ICtx {
 
    public static final int CTX_ID    = 2;
-   
+
    //#debug
    protected final C5Debug c5Debug;
 
@@ -109,6 +109,11 @@ public class C5Ctx extends ACtx implements ICtx {
       }
    }
 
+   /**
+    * 
+    * @param fileName
+    * @throws IOException
+    */
    public void saveCtxSettingsToUserHome(String fileName) throws IOException {
       String homeDir = getUserHome();
       File f = new File(homeDir, fileName);
@@ -248,7 +253,6 @@ public class C5Ctx extends ACtx implements ICtx {
       }
    }
 
-  
    public void toStringListString(Dctx dc, List<String> list, String title) {
       if (list == null) {
          dc.append("List " + title + " is null");
