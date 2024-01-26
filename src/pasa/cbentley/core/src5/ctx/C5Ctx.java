@@ -139,13 +139,13 @@ public class C5Ctx extends ACtx implements ICtx {
    }
 
    public void toString(Dctx dc) {
-      dc.root(this, "C5Ctx");
+      dc.root(this, C5Ctx.class, 142);
       toStringPrivate(dc);
       super.toString(dc.sup());
    }
 
    public void toString1Line(Dctx dc) {
-      dc.root1Line(this, "C5Ctx");
+      dc.root1Line(this, C5Ctx.class);
       toStringPrivate(dc);
       super.toString1Line(dc.sup1Line());
    }
