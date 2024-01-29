@@ -23,6 +23,7 @@ import pasa.cbentley.core.src4.io.BADataOS;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.logging.IUserLog;
+import pasa.cbentley.core.src4.stator.Stator;
 import pasa.cbentley.core.src5.interfaces.IMem5;
 import pasa.cbentley.core.src5.interfaces.INameable;
 import pasa.cbentley.core.src5.interfaces.ITechJava5Props;
@@ -103,9 +104,9 @@ public class C5Ctx extends ACtx implements ICtx {
       if (f.exists()) {
          FileInputStream fis = new FileInputStream(f);
          byte[] bytes = uc.getIOU().streamToByte(fis);
-         BAByteIS bis = new BAByteIS(uc, bytes);
-         BADataIS bais = new BADataIS(uc, bis);
-         uc.getCtxManager().stateRead(bais);
+         Stator stator = new Stator(getUC());
+         stator.importFrom(bytes);
+         uc.getCtxManager().stateOwnerRead(stator);
       }
    }
 
@@ -121,13 +122,13 @@ public class C5Ctx extends ACtx implements ICtx {
       //#debug
       toDLog().pFlow("" + f.getAbsolutePath(), this, C5Ctx.class, "saveCtxSettingsToUserHome", LVL_05_FINE, true);
 
-      BAByteOS bis = new BAByteOS(uc);
-      BADataOS bais = new BADataOS(uc, bis);
-      uc.getCtxManager().stateWrite(bais);
+      Stator stator = new Stator(getUC());
+      uc.getCtxManager().stateOwnerWrite(stator);
 
+      byte[] serializeAll = stator.serializeAll();
       FileOutputStream fos = new FileOutputStream(f);
       try {
-         fos.write(bis.getArrayRef(), 0, bis.getByteWrittenCount());
+         fos.write(serializeAll, 0, serializeAll.length);
       } catch (Exception e) {
          fos.close();
       }
