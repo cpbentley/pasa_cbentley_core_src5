@@ -34,7 +34,7 @@ public class StringArrayMap implements Map<String, String> {
 
    public StringArrayMap(C5Ctx c5, int capacity) {
       this.c5 = c5;
-      strings = new BufferString(c5.getUCtx(), capacity * 2);
+      strings = new BufferString(c5.getUC(), capacity * 2);
    }
 
    public int size() {

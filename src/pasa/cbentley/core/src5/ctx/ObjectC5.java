@@ -41,7 +41,7 @@ public abstract class ObjectC5  implements  IStringable  {
    }
 
    public UCtx toStringGetUCtx() {
-      return c5.getUCtx();
+      return c5.getUC();
    }
 
    //#enddebug

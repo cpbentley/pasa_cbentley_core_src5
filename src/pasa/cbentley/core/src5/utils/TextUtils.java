@@ -111,7 +111,7 @@ public class TextUtils {
          return inputWithNoSpaces;
       }
       int offsetStart = 0;
-      StringBBuilder sb = new StringBBuilder(c5.getUCtx());
+      StringBBuilder sb = new StringBBuilder(c5.getUC());
       int maxWordSize = getSizeWordMax(dictionary);
       if(maxWordSize == 0) {
          //we have a nasty dic with just an empty string!

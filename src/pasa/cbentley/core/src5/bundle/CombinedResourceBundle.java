@@ -101,7 +101,7 @@ public class CombinedResourceBundle extends ResourceBundle implements IStringabl
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    //#enddebug

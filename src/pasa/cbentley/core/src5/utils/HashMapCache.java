@@ -128,7 +128,7 @@ public class HashMapCache<E extends INameable<V>, V extends IStringable> impleme
    }
 
    public UCtx toStringGetUCtx() {
-      return c5.getUCtx();
+      return c5.getUC();
    }
 
    //#enddebug
