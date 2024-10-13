@@ -54,7 +54,7 @@ public class C5Ctx extends ACtx implements ICtx {
       c5Debug = new C5Debug(this);
       
       //#debug
-      toDLog().pCreate("", this, C5Ctx.class, "Created@57", LVL_04_FINER, true);
+      toDLog().pCreate("", this, C5Ctx.class, "Created@57", LVL_05_FINE, true);
 
    }
 
